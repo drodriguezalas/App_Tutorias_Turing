@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using App_Tutorias_Turing.Models;
 
+
+
 namespace App_Tutorias_Turing.Controllers
 {
     public class TutoriaController : Controller
@@ -14,80 +16,52 @@ namespace App_Tutorias_Turing.Controllers
             services = new Service();
         }
 
-        // GET: TutoriaController
-        public ActionResult Index()
+        public ActionResult Matricular(int usuarioId)
         {
-            var model = services.mostrarTutorias();
-            return View(model);
+            var usuario = services.Usuarios.Include("MisTutorias").FirstOrDefault(u => u.Id == usuarioId);
+            if (usuario == null)
+            {
+                TempData["Mensaje"] = "Usuario no encontrado.";
+                return RedirectToAction("Login", "Account"); // Redirige al login si el usuario no existe
+            }
+
+            var tutorias = services.Tutorias.ToList();
+            return View(tutorias);
         }
 
-        // GET: TutoriaController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: TutoriaController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: TutoriaController/Create
+        // POST: ConfirmarMatricula (Confirma la matrícula de una tutoría)
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult ConfirmarMatricula(int usuarioId, int tutoriaId)
         {
-            try
+            var usuario = services.Usuarios.Include("MisTutorias").FirstOrDefault(u => u.Id == usuarioId);
+            var tutoria = services.Tutorias.FirstOrDefault(t => t.Id == tutoriaId);
+
+            if (usuario == null || tutoria == null)
             {
-                return RedirectToAction(nameof(Index));
+                TempData["Mensaje"] = "Error al encontrar usuario o tutoría.";
+                return RedirectToAction("Matricular", new { usuarioId });
             }
-            catch
+
+            // Evita matriculaciones duplicadas
+            if (usuario.MisTutorias.Any(t => t.Id == tutoriaId))
             {
-                return View();
+                TempData["Mensaje"] = "Ya estás matriculado en esta tutoría.";
+                return RedirectToAction("Matricular", new { usuarioId });
             }
+
+            // Matricular usuario
+            usuario.MisTutorias.Add(tutoria);
+            services.SaveChanges();
+
+            TempData["Mensaje"] = "¡Matrícula confirmada!";
+            return RedirectToAction("Matricular", new { usuarioId });
         }
 
-        // GET: TutoriaController/Edit/5
-        public ActionResult Edit(int id)
+        // GET: RefrescarTutorias (Refresca la lista de tutorías)
+        public ActionResult RefrescarTutorias()
         {
-            return View();
-        }
-
-        // POST: TutoriaController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: TutoriaController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: TutoriaController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var tutorias = services.Tutorias.ToList();
+            return PartialView("_TutoriasList", tutorias);  // Usando una vista parcial para actualizar la lista
         }
     }
 }

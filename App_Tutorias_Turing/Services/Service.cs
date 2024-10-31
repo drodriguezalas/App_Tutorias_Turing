@@ -8,6 +8,8 @@ namespace App_Tutorias_Turing.Services
     {
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Tutoria> Tutorias { get; set; }
+        public DbSet<Matricula> Matriculas { get; set; }
+
 
         public Service() : base("App_Tutorias_Turing") { }
 
