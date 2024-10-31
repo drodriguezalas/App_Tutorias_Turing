@@ -1,0 +1,10 @@
+﻿@model App_Tutorias_Turing.Models.Tutoria
+
+@{
+    ViewData["Title"] = "Detalles de la Tutoría";
+}
+
+<h1>@Model.Descripcion</h1>
+<p>URL: <a href="@Model.Url" target="_blank">@Model.Url</a></p>
+
+<a asp-action="Index" class="btn btn-secondary">Volver a la lista de tutorías</a>
