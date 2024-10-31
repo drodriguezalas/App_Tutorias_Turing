@@ -36,16 +36,21 @@ namespace App_Tutorias_Turing.Controllers
         // POST: UsuarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Usuario nuevoUsuario)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    services.agregarUsuario(nuevoUsuario);
+                    return RedirectToAction("Index", "Home");
+                }
             }
             catch
             {
-                return View();
+                
             }
+            return View();
         }
 
         // GET: UsuarioController/Edit/5
