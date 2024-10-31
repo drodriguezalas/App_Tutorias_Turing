@@ -1,0 +1,23 @@
+﻿@model List<App_Tutorias_Turing.Models.Tutoria>
+
+<h1>Todas las Tutorías</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tutoria in Model)
+        {
+            <tr>
+                <td>@tutoria.Descripcion</td>
+                <td>
+                    <a asp-action="Matricular" asp-route-tutoriaId="@tutoria.Id" class="btn btn-primary">Matricular</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

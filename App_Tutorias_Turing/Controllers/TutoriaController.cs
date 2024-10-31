@@ -36,16 +36,21 @@ namespace App_Tutorias_Turing.Controllers
         // POST: TutoriaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Tutoria nuevaTutoria)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    services.agregarTutoria(nuevaTutoria);
+                    return RedirectToAction("Index", "Home");
+                }
             }
             catch
             {
-                return View();
+                
             }
+            return View();
         }
 
         // GET: TutoriaController/Edit/5
