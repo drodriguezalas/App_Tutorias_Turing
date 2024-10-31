@@ -1,0 +1,20 @@
+﻿@model App_Tutorias_Turing.Models.Tutoria
+
+@{
+    ViewData["Title"] = "Crear Tutoría";
+}
+
+<h1>Crear Tutoría</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Descripción</label>
+        <input asp-for="Descripcion" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>URL</label>
+        <input asp-for="Url" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Crear</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista de tutorías</a>
+</form>
